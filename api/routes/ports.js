@@ -3,11 +3,13 @@ const router = express.Router();
 var mongo = require('mongodb');
 const imagesModel = require('../models/images.model');
 const StaticData = require('../models/staticData.model');
-const PortcallsByDate = require('../models/portCallsByDate.model');
+const PortcallsByDate = require('../models/portcallsByDate.model');
 const IntelligenceRisk = require('../models/intelligenceRisk.model');
-const PortcallsByClass = require('../models/portCallsByClass.model');
+const PortcallsByClass = require('../models/portcallsByClass.model');
 
-
+/**
+ *  Model Getters
+ */
 const getPortByString = async (str = '', res) => {
     const query = str ? { port_name: new RegExp(str, "i") } : {};
 
@@ -46,6 +48,11 @@ const getRiskInfo = async (port_id = '', res) => {
     }).limit(100)
 };
 
+
+
+/**
+ *  Routes
+ */
 
 router.get('/images/:input', async function (req, res, next) {
     try {
@@ -88,6 +95,14 @@ router.get('/portCallsByDate/:id', async function (req, res, next) {
 });
 
 router.get('/portCallsByClass/:id', async function (req, res, next) {
+    try {
+        return getPortPortcallsByClass(req.params.id, res);
+    } catch ( e ) {
+        res.json({ error: { e } })
+    }
+});
+
+router.get('/compliance/:id', async function (req, res, next) {
     try {
         return getPortPortcallsByClass(req.params.id, res);
     } catch ( e ) {

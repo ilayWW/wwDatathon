@@ -12,10 +12,15 @@ class ClassesBarChart extends React.Component {
         let portcallsByClass = await fetch(`http://localhost:9000/ports/portCallsByClass/${ this.props.id }`)
             .then(res => res.json());
 
-        console.log(portcallsByClass.length ? portcallsByClass.map(({ vessel_class }) => vessel_class): []);
-        console.log(portcallsByClass.length ? portcallsByClass.map(({ portcalls_last_year }) => portcalls_last_year): []);
+        portcallsByClass.sort((a,b)=>{
+            return a.portcalls_last_year - b.portcalls_last_year;
+        });
+
         this.setState({
             options: {
+                title:{
+                  text: 'Port Calls by Class'
+                },
                 plotOptions: {
                     bar: {
                         horizontal: true,
@@ -30,6 +35,7 @@ class ClassesBarChart extends React.Component {
             },
             series: [{
                 data: portcallsByClass.length ? portcallsByClass.map(({ portcalls_last_year }) => portcalls_last_year): [],
+                name: 'Port Calls'
             }],
         })
     }
