@@ -13,6 +13,8 @@ import Divider from "@material-ui/core/Divider";
 import ClassesBarChart from "../components/BarsChart.component";
 import words from 'lodash/words';
 import GaugeGroup from "../components/GaugeGroup.component";
+import SafetyRisk from "../components/SafetyRisk.component";
+import PrevNext from "../components/PrevNext.component";
 
 
 @inject('portsStore')
@@ -34,7 +36,7 @@ class PortPage extends Component {
         staticData = staticData[0];
         const countryName = words(staticData.country).join(' ');
         staticData.countryObj = {
-            code: getCode(countryName  || ''),
+            code: getCode(countryName || ''),
             name: countryName
         };
 
@@ -46,11 +48,11 @@ class PortPage extends Component {
         }
         const wholePort = Object.assign({}, portsStore.ports.get(portId), port);
         this.props.portsStore.setPorts([wholePort]);
-        this.setState({ port: wholePort});
+        this.setState({ port: wholePort });
     }
 
     render() {
-        const { routing} = this.props;
+        const { routing } = this.props;
         const portId = routing.location.pathname.replace('/', '');
         if (this.state.port) {
             return (
@@ -65,13 +67,15 @@ class PortPage extends Component {
                                     <List>
                                         <ListItem>
                                             <Typography variant={ 'body1' }>
-                                                Country: {this.state.port.countryObj && <ReactCountryFlag code={this.state.port.countryObj.code} /> }
-                                                {this.state.port.countryObj && this.state.port.countryObj.name}
+                                                Country: { this.state.port.countryObj &&
+                                            <ReactCountryFlag code={ this.state.port.countryObj.code }/> }
+                                                { this.state.port.countryObj && this.state.port.countryObj.name }
                                             </Typography>
                                         </ListItem>
                                         <ListItem>
                                             <Typography variant={ 'body1' }>
-                                                ISPS Comply: {this.state.port.ISPSCompliance ? this.state.port.ISPSCompliance: 'N/A'}
+                                                ISPS
+                                                Comply: { this.state.port.ISPSCompliance ? this.state.port.ISPSCompliance : 'N/A' }
                                             </Typography>
                                         </ListItem>
                                     </List>
@@ -79,7 +83,8 @@ class PortPage extends Component {
 
                                 <Grid item xs={ 7 } container justify={ 'flex-end' }>
                                     <Grid item>
-                                        {this.state.port.url && <img height={ '250px' } src={ this.state.port.url } alt=""/>}
+                                        { this.state.port.url &&
+                                        <img height={ '250px' } src={ this.state.port.url } alt=""/> }
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -87,28 +92,39 @@ class PortPage extends Component {
                     </Grid>
                     <Grid item xs={ 10 }>
                         <Paper style={ { padding: '10px' } }>
-                            <IntelligenceRisk id={portId}/>
+                            <IntelligenceRisk id={ portId }/>
+                        </Paper>
+                    </Grid>
+
+                    <Grid item xs={ 10 }>
+                        <Paper style={ { padding: '10px' } }>
+                            <SafetyRisk id={ portId }/>
                         </Paper>
                     </Grid>
                     <Grid item xs={ 10 }>
-                        <Typography variant={'h5'}>
+                        <Typography variant={ 'h5' }>
                             Port Statistic
                         </Typography>
-                        <Divider />
+                        <Divider/>
                     </Grid>
-                    <Grid item xs={ 10 }>
+                    <Grid item xs={ 5 }>
                         <Paper style={ { padding: '10px' } }>
-                            <PortCallsChart id={portId}/>
+                            <PortCallsChart id={ portId }/>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={ 5 }>
+                        <Paper style={ { padding: '10px', height: '100%' } }>
+                            <PrevNext id={ portId }/>
                         </Paper>
                     </Grid>
                     <Grid item xs={ 4 }>
-                        <Paper style={ { padding: '10px', height:'100%' } }>
-                            <ClassesBarChart id={portId}/>
+                        <Paper style={ { padding: '10px', height: '100%' } }>
+                            <ClassesBarChart id={ portId }/>
                         </Paper>
                     </Grid>
                     <Grid item xs={ 6 }>
-                        <Paper style={ { padding: '10px'} }>
-                            <GaugeGroup id={portId}/>
+                        <Paper style={ { padding: '10px' } }>
+                            <GaugeGroup id={ portId }/>
                         </Paper>
                     </Grid>
                 </Grid>)

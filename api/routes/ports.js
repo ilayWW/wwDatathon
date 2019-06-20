@@ -14,6 +14,7 @@ const models = {
     PortcallsUniqueModel: require('../models/portcallsUnique.model'),
     PscStatsModel: require('../models/pscStats.model'),
     StaticDataModel: require('../models/staticData.model'),
+    PrevNextModel: require('../models/prevNext.model'),
 };
 
 
@@ -59,7 +60,7 @@ const getPortPortcallsByClass = async (port_id = '', res) => {
 
 const getRiskInfo = async (port_id = '', res) => {
     return await models.IntelligenceRiskModel.find({ port_id },
-        'port_id vessel_count_total vessel_count_risky risky port_percentile', function (err, doc) {
+        'port_id vessel_count_total vessel_count_risky risky port_percentile upcoming_risky_vessels', function (err, doc) {
             res.json(doc);
         }).limit(100)
 };
@@ -155,6 +156,16 @@ router.get('/portAccidents/:id', async function (req, res, next) {
         return getByModelName(req.params.id,
             'PortAccidentsModel',
             'port_id accidents_count accidents', res);
+    } catch ( e ) {
+        res.json({ error: { e } })
+    }
+});
+
+router.get('/prevNext/:id', async function (req, res, next) {
+    try {
+        return getByModelName(req.params.id,
+            'PrevNextModel',
+            'port_id port_name prevs nexts', res);
     } catch ( e ) {
         res.json({ error: { e } })
     }

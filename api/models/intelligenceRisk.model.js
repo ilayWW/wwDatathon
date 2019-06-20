@@ -10,6 +10,7 @@ const DataSchema = new Schema(
         "vessel_count_total" : Number,
         "port_name" : String,
         "vessel_count_risky" : Number,
+        upcoming_risky_vessels: [],
         "risky" : [
             {
                 "name" : String,

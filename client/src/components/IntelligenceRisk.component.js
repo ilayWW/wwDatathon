@@ -18,7 +18,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 class IntelligenceRisk extends React.Component {
     state = {
         riskyVessels: 0,
-        vesselsCount: 0
+        vesselsCount: 0,
+        upcomingRiskyVessels: []
     };
 
     fetchData = async () => {
@@ -31,7 +32,6 @@ class IntelligenceRisk extends React.Component {
         portCalls.sort((a, b) => {
             return new Date(a.month) - new Date(b.month);
         });
-
         this.setState({
             options: {
                 chart: {
@@ -66,7 +66,8 @@ class IntelligenceRisk extends React.Component {
             risk: (riskResponse.port_percentile * 100).toFixed(2) || 0,
             riskyVesselsCount: riskResponse.vessel_count_risky,
             vesselsCount: riskResponse.vessel_count_total,
-            riskyVessels: riskResponse.risky
+            riskyVessels: riskResponse.risky.slice(0, 3),
+            upcomingRiskyVessels: riskResponse.upcoming_risky_vessels.slice(0, 3),
         })
     };
 
@@ -76,7 +77,7 @@ class IntelligenceRisk extends React.Component {
 
     render() {
         return <Grid container direction={ 'column' }>
-            <Grid item>Intelligence Risk</Grid>
+            <Grid item>Security Risk</Grid>
             <Grid item container>
                 <Grid item xs={ 4 } alignContent={ 'center' }>
                     { this.state.risk && <RadialChart label={ 'Intelligence Risk' } score={ this.state.risk }/> }
@@ -86,15 +87,39 @@ class IntelligenceRisk extends React.Component {
                     { this.state.vesselsCount && <StackedRiskBarChart riskyCount={ this.state.riskyVesselsCount }
                                                                       vesselsInPortCount={ this.state.vesselsCount }/> }
                 </Grid>
-                <Grid item container xs={ 6 } direction={ 'column' }>
+                <Grid item container xs={ 3 } direction={ 'column' }>
                     <Grid item container alignContent={ 'center' } justify={ 'center' }>
                         <Typography variant={ 'caption' }> Top Risky Vessels In Port:</Typography>
                     </Grid>
                     <Grid item container alignContent={ 'center' } justify={ 'center' }>
                         <List>
-                            { this.state.risk && this.state.riskyVessels.map(vessel => {
+                            { this.state.riskyVessels.length && this.state.riskyVessels.map(vessel => {
                                 return <ListItem>
 
+                                    <ListItemAvatar>
+                                        <Avatar style={ { backgroundColor: '#F44336' } }>
+                                            <Typography variant={ 'caption' }>
+                                                { vessel.percentile }
+                                            </Typography>
+                                        </Avatar>
+                                    </ListItemAvatar>
+                                    <a href={ `https://int.wnwd.com/vesselProfile/${ vessel._id }` }>
+                                        <ListItemText primary={ vessel.name } secondary={ `(${ vessel.imo })` }/>
+                                    </a>
+                                </ListItem>
+                            })
+                            }
+                        </List>
+                    </Grid>
+                </Grid>
+                <Grid item container xs={ 3 } direction={ 'column' }>
+                    <Grid item container alignContent={ 'center' } justify={ 'center' }>
+                        <Typography variant={ 'caption' }> Upcoming Risky Vessels To Port:</Typography>
+                    </Grid>
+                    <Grid item container alignContent={ 'center' } justify={ 'center' }>
+                        <List>
+                            { this.state.upcomingRiskyVessels.length && this.state.upcomingRiskyVessels.map(vessel => {
+                                return <ListItem>
                                     <ListItemAvatar>
                                         <Avatar style={ { backgroundColor: '#F44336' } }>
                                             <Typography variant={ 'caption' }>
