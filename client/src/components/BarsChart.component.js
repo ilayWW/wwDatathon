@@ -42,9 +42,9 @@ class ClassesBarChart extends React.Component {
 
     render() {
         return (
-            <div id="chart">
+            <div>
                 { this.state &&
-                <Chart options={ this.state.options } series={ this.state.series } type="bar" height="300"/> }
+                <Chart options={ this.state.options } series={ this.state.series } type="bar" /> }
             </div>
         );
     }

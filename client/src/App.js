@@ -23,7 +23,7 @@ class App extends Component {
 
     render() {
         const isHomePage = this.props.routing.location.pathname === '/';
-        return <Grid style={ { height: '300vh', backgroundColor: '#B3E5FC' } }>
+        return <Grid style={ { height: '500vh', backgroundColor: '#B3E5FC' } }>
             <AppBar position="static" color="default" style={{marginBottom: '20px'}}>
                 <Toolbar>
                     <Typography variant="h6" color="primary">

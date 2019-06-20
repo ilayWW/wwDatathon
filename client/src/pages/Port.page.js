@@ -12,6 +12,7 @@ import IntelligenceRisk from "../components/IntelligenceRisk.component";
 import Divider from "@material-ui/core/Divider";
 import ClassesBarChart from "../components/BarsChart.component";
 import words from 'lodash/words';
+import GaugeGroup from "../components/GaugeGroup.component";
 
 
 @inject('portsStore')
@@ -100,14 +101,14 @@ class PortPage extends Component {
                             <PortCallsChart id={portId}/>
                         </Paper>
                     </Grid>
-                    <Grid item xs={ 5 }>
-                        <Paper style={ { padding: '10px' } }>
+                    <Grid item xs={ 4 }>
+                        <Paper style={ { padding: '10px', height:'100%' } }>
                             <ClassesBarChart id={portId}/>
                         </Paper>
                     </Grid>
-                    <Grid item xs={ 5 }>
-                        <Paper style={ { padding: '10px' } }>
-                            <PortCallsChart id={portId}/>
+                    <Grid item xs={ 6 }>
+                        <Paper style={ { padding: '10px'} }>
+                            <GaugeGroup id={portId}/>
                         </Paper>
                     </Grid>
                 </Grid>)
