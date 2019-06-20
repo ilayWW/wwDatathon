@@ -26,7 +26,7 @@ class PortPage extends Component {
         port: {}
     };
 
-    async componentDidMount() {
+    fetchData = async () => {
         const { routing, portsStore } = this.props;
         const portId = routing.location.pathname.replace('/', '');
 
@@ -51,9 +51,16 @@ class PortPage extends Component {
         this.setState({ port: wholePort });
     }
 
+    async componentDidMount() {
+        this.fetchData()
+    }
+
     render() {
         const { routing } = this.props;
         const portId = routing.location.pathname.replace('/', '');
+        if (portId !== this.state.port.port_id) {
+            this.fetchData();
+        }
         if (this.state.port) {
             return (
                 <Grid container justify={ 'center' } spacing={ 2 }>
@@ -67,9 +74,10 @@ class PortPage extends Component {
                                     <List>
                                         <ListItem>
                                             <Typography variant={ 'body1' }>
-                                                Country: { this.state.port.countryObj &&
-                                            <ReactCountryFlag code={ this.state.port.countryObj.code }/> }
-                                                { this.state.port.countryObj && this.state.port.countryObj.name }
+                                                Country:
+                                                { this.state.port.countryObj && ' '+ this.state.port.countryObj.name+ ' '  }
+                                                { this.state.port.countryObj &&
+                                                <ReactCountryFlag code={ this.state.port.countryObj.code }/> }
                                             </Typography>
                                         </ListItem>
                                         <ListItem>

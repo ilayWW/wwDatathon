@@ -9,6 +9,7 @@ import Avatar from "@material-ui/core/Avatar";
 import ListItemText from "@material-ui/core/ListItemText";
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import ArrowForward from '@material-ui/icons/ArrowForward';
+import {Link } from "react-router-dom";
 
 @inject('routing')
 @inject('portsStore')
@@ -30,22 +31,23 @@ class PrevNext extends React.Component {
         this.fetchData()
     }
 
+
     render() {
         return <Grid container justify={ 'space-around' }>
             <Grid item>
                 Previous Ports
                 <List>
                     { this.state.prevs && this.state.prevs.map((nextPort) => <ListItem>
+
                             <ListItemAvatar>
                                 <Avatar>
-                                    <ArrowBack />
+                                    <ArrowBack/>
                                 </Avatar>
                             </ListItemAvatar>
-                            <a href={ `localhost:3000/${ nextPort[0] }` }>
-                                <ListItemText
-                                    primary={ nextPort[1] }
-                                />
-                            </a>
+                            <Link to={ `/${ nextPort[0] }` }><ListItemText
+                                primary={ nextPort[1] }
+                            />
+                            </Link>
                         </ListItem>
                     ) }
                 </List>
@@ -56,13 +58,14 @@ class PrevNext extends React.Component {
                     { this.state.nexts && this.state.nexts.map((nextPort) => <ListItem>
                             <ListItemAvatar>
                                 <Avatar>
-                                    <ArrowForward />
+                                    <ArrowForward/>
                                 </Avatar>
                             </ListItemAvatar>
                             <a href={ `localhost:3000/${ nextPort[0] }` }>
-                                <ListItemText
+                                <Link to={ `/${ nextPort[0] }` }><ListItemText
                                     primary={ nextPort[1] }
                                 />
+                                </Link>
                             </a>
                         </ListItem>
                     ) }

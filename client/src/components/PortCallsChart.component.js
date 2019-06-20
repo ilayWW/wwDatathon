@@ -6,7 +6,9 @@ import { inject, observer } from 'mobx-react';
 @inject('portsStore')
 @observer
 class PortCallsChart extends React.Component {
-    state = {};
+    state = {
+        id: ''
+    };
 
     fetchData = async () => {
         const response = await fetch(`http://localhost:9000/ports/portCallsByDate/${ this.props.id }`)
@@ -16,6 +18,7 @@ class PortCallsChart extends React.Component {
             return new Date(a.month) - new Date(b.month);
         });
         this.setState({
+            id: this.props.id,
             options: {
                 chart: {
                     zoom: {
@@ -54,6 +57,9 @@ class PortCallsChart extends React.Component {
     }
 
     render() {
+        if (this.props.id !== this.state.id) {
+            this.fetchData()
+        }
         return <div>
             { this.state.options &&
             <Chart options={ this.state.options } series={ this.state.series } type="line" height="300"/> }

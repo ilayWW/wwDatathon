@@ -11,6 +11,9 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import WorningIcon from '@material-ui/icons/WarningOutlined';
 import ListItemText from "@material-ui/core/ListItemText";
+import SimpleChart from "./SimpleGauge.component";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import NavChart from "./NavGauge.component";
 
 @inject('routing')
 @inject('portsStore')
@@ -23,51 +26,22 @@ class SafetyRisk extends React.Component {
     };
 
     fetchData = async () => {
-        const portCalls = await fetch(`http://localhost:9000/ports/portCallsByDate/${ this.props.id }`)
+        const [portAccidentsNormalized] = await fetch(`http://localhost:9000/ports/portAccidentsNormalized/${ this.props.id }`)
             .then(res => res.json());
 
-        let riskResponse = await fetch(`http://localhost:9000/ports/risk/${ this.props.id }`)
-            .then(res => res.json());
-        riskResponse = riskResponse[0];
-        portCalls.sort((a, b) => {
-            return new Date(a.month) - new Date(b.month);
-        });
+        let [pscResponse] = await fetch(`http://localhost:9000/ports/pscStats/${ this.props.id }`)
+            .then(res => {
+                return res.json()
+            });
+
+        console.log(portAccidentsNormalized);
         this.setState({
-            options: {
-                chart: {
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'straight'
-                },
-                title: {
-                    text: 'Port Calls Trends by Month',
-                    align: 'left'
-                },
-                grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                    },
-                },
-                xaxis: {
-                    categories: portCalls.map(({ month }) => month),
-                }
-            },
-            series: [{
-                name: "Port Calls",
-                data: portCalls.map(({ portcalls_last_year }) => portcalls_last_year),
-            }],
-            risk: (riskResponse.port_percentile * 100).toFixed(2) || 0,
-            riskyVesselsCount: riskResponse.vessel_count_risky,
-            vesselsCount: riskResponse.vessel_count_total,
-            riskyVessels: riskResponse.risky.slice(0, 3),
-            upcomingRiskyVessels: riskResponse.upcoming_risky_vessels.slice(0, 3),
+            detentions_inspections_ratio: pscResponse.detentions_inspections_ratio,
+            inspections_portcalls_ratio: pscResponse.inspections_portcalls_ratio,
+            inspections_with_deficiencies_inspections_ratio: pscResponse.inspections_with_deficiencies_inspections_ratio,
+            risk_percentile: portAccidentsNormalized.risk_percentile,
+            accidents_count: portAccidentsNormalized.accidents_count,
+            port_complexity: portAccidentsNormalized.port_complexity,
         })
     };
 
@@ -79,11 +53,73 @@ class SafetyRisk extends React.Component {
         return <Grid container direction={ 'column' }>
             <Grid item>Safety Risk</Grid>
             <Grid item container>
-                <Grid item xs={ 4 } alignContent={ 'center' }>
-                    { this.state.risk && <RadialChart label={ 'Safety Risk' } score={ 14 }/> }
+                <Grid item xs={ 4 }>
+                    { this.state.risk_percentile &&
+                    <RadialChart label={ 'Safety Risk' } score={ (this.state.risk_percentile * 100).toFixed(2) }/> }
                 </Grid>
-                <Grid item xs={ 2 }>
-                    <Typography variant={ 'caption' }> Risky Vessels In Port:</Typography>
+                <Grid item xs={ 4 } alignContent={ 'center' }>
+                    { this.state.inspections_with_deficiencies_inspections_ratio && <List>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar style={ { backgroundColor: '#4286f4' } }>
+                                    <Typography variant={ 'caption' }>
+                                        { `${ (this.state.detentions_inspections_ratio * 100).toFixed(0) }%` }
+                                    </Typography>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={ 'Detention Rate Per Inspection' }
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar style={ { backgroundColor: '#4286f4' } }>
+                                    <Typography variant={ 'caption' }>
+                                        { `${ (this.state.inspections_with_deficiencies_inspections_ratio * 100).toFixed(0) }%` }
+                                    </Typography>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={ 'Inspections with Deficiencies Rate' }
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <ListItemAvatar>
+                                <Avatar style={ { backgroundColor: '#4286f4' } }>
+                                    <Typography variant={ 'caption' }>
+                                        { `${ (this.state.inspections_portcalls_ratio * 100).toFixed(0) }%` }
+                                    </Typography>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={ 'Inspection Rate Per Port Call' }
+                            />
+                        </ListItem>
+                        { this.state.accidents_count && <ListItem>
+                            <ListItemAvatar>
+                                <Avatar style={ { backgroundColor: '#4286f4' } }>
+                                    <Typography variant={ 'caption' }>
+                                        { `${ this.state.accidents_count }` }
+                                    </Typography>
+                                </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                                primary={ 'Accidents' }
+                                secondary={ 'Last 5 Years' }
+                            />
+                        </ListItem> }
+                    </List> }
+                </Grid>
+                <Grid container item xs={ 4 } justify={ 'center' } alignContent={ 'center' }>
+                    <Grid item container direction={ 'column' } justify={ 'center' } alignContent={ 'center' }>
+                        <Grid item xs>
+                            { this.state.port_complexity &&
+                            <Typography>Navigational Complexity: { this.state.port_complexity }/5</Typography> }
+                        </Grid>
+                        <Grid item>
+                            { this.state.port_complexity && <NavChart score={100*(this.state.port_complexity/5)} label={'sad'} />}
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

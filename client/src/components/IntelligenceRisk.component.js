@@ -33,6 +33,7 @@ class IntelligenceRisk extends React.Component {
             return new Date(a.month) - new Date(b.month);
         });
         this.setState({
+            id: this.props.id,
             options: {
                 chart: {
                     zoom: {
@@ -76,11 +77,14 @@ class IntelligenceRisk extends React.Component {
     }
 
     render() {
+        if (this.props.id !== this.state.id) {
+            this.fetchData()
+        }
         return <Grid container direction={ 'column' }>
             <Grid item>Security Risk</Grid>
             <Grid item container>
                 <Grid item xs={ 4 } alignContent={ 'center' }>
-                    { this.state.risk && <RadialChart label={ 'Intelligence Risk' } score={ this.state.risk }/> }
+                    { this.state.risk && <RadialChart label={ 'Security Risk' } score={ this.state.risk }/> }
                 </Grid>
                 <Grid item xs={ 2 }>
                     <Typography variant={ 'caption' }> Risky Vessels In Port:</Typography>

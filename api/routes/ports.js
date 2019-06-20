@@ -15,6 +15,7 @@ const models = {
     PscStatsModel: require('../models/pscStats.model'),
     StaticDataModel: require('../models/staticData.model'),
     PrevNextModel: require('../models/prevNext.model'),
+    PortAccidentsNormalizedModel: require('../models/portAccidentsNormalized.model'),
 };
 
 
@@ -201,11 +202,21 @@ router.get('/portcallsUnique/:id', async function (req, res, next) {
     }
 });
 
+router.get('/portAccidentsNormalized/:id', async function (req, res, next) {
+    try {
+        return getByModelName(req.params.id,
+            'PortAccidentsNormalizedModel',
+            'port_id risk_percentile port_complexity accidents_count', res);
+    } catch ( e ) {
+        res.json({ error: { e } })
+    }
+});
+
 router.get('/pscStats/:id', async function (req, res, next) {
     try {
         return getByModelName(req.params.id,
             'PscStatsModel',
-            'port_id inspections_with_deficiencies_portcalls_ratio detentions_portcalls_ratio inspections_portcalls_ratio port_name', res);
+            'port_id inspections_portcalls_ratio detentions_inspections_ratio inspections_with_deficiencies_inspections_ratio port_name', res);
     } catch ( e ) {
         res.json({ error: { e } })
     }
