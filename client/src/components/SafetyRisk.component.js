@@ -36,9 +36,9 @@ class SafetyRisk extends React.Component {
 
         console.log(portAccidentsNormalized);
         this.setState({
-            detentions_inspections_ratio: pscResponse.detentions_inspections_ratio,
-            inspections_portcalls_ratio: pscResponse.inspections_portcalls_ratio,
-            inspections_with_deficiencies_inspections_ratio: pscResponse.inspections_with_deficiencies_inspections_ratio,
+            detentions_inspections_ratio: pscResponse ? pscResponse.detentions_inspections_ratio : 0,
+            inspections_portcalls_ratio: pscResponse ? pscResponse.inspections_portcalls_ratio : 0,
+            inspections_with_deficiencies_inspections_ratio: pscResponse ? pscResponse.inspections_with_deficiencies_inspections_ratio : 0,
             risk_percentile: portAccidentsNormalized.risk_percentile,
             accidents_count: portAccidentsNormalized.accidents_count,
             port_complexity: portAccidentsNormalized.port_complexity,
@@ -114,10 +114,12 @@ class SafetyRisk extends React.Component {
                     <Grid item container direction={ 'column' } justify={ 'center' } alignContent={ 'center' }>
                         <Grid item xs>
                             { this.state.port_complexity &&
-                            <Typography style={{textAlign: 'center'}}>Navigational Complexity: { this.state.port_complexity }/5</Typography> }
+                            <Typography style={ { textAlign: 'center' } }>Navigational
+                                Complexity: { this.state.port_complexity }/5</Typography> }
                         </Grid>
                         <Grid item>
-                            { this.state.port_complexity && <NavChart score={100*(this.state.port_complexity/5)} label={'sad'} />}
+                            { this.state.port_complexity &&
+                            <NavChart score={ 100 * (this.state.port_complexity / 5) } label={ 'sad' }/> }
                         </Grid>
                     </Grid>
                 </Grid>
