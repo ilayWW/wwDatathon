@@ -20,7 +20,7 @@ class NavChart extends React.Component {
                     },
                     labels: ['']
                 },
-                series: [this.props.score.toFixed(2)],
+                series: [this.props.score.toFixed(0)],
                 score: this.props.score
             }
         )

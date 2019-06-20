@@ -114,7 +114,7 @@ class SafetyRisk extends React.Component {
                     <Grid item container direction={ 'column' } justify={ 'center' } alignContent={ 'center' }>
                         <Grid item xs>
                             { this.state.port_complexity &&
-                            <Typography>Navigational Complexity: { this.state.port_complexity }/5</Typography> }
+                            <Typography style={{textAlign: 'center'}}>Navigational Complexity: { this.state.port_complexity }/5</Typography> }
                         </Grid>
                         <Grid item>
                             { this.state.port_complexity && <NavChart score={100*(this.state.port_complexity/5)} label={'sad'} />}
