@@ -29,12 +29,14 @@ class PortPage extends Component {
     fetchData = async () => {
         const { routing, portsStore } = this.props;
         const portId = routing.location.pathname.replace('/', '');
+        if (!portId) return;
 
         let staticData = await fetch(`http://localhost:9000/ports/static/${ portId }`)
             .then(res => res.json());
 
         staticData = staticData[0];
-        const countryName = words(staticData.country).join(' ');
+        if (!staticData) return;
+        const countryName = words(staticData ? staticData.country : '').join(' ');
         staticData.countryObj = {
             code: getCode(countryName || ''),
             name: countryName
@@ -75,7 +77,7 @@ class PortPage extends Component {
                                         <ListItem>
                                             <Typography variant={ 'body1' }>
                                                 Country:
-                                                { this.state.port.countryObj && ' '+ this.state.port.countryObj.name+ ' '  }
+                                                { this.state.port.countryObj && ' ' + this.state.port.countryObj.name + ' ' }
                                                 { this.state.port.countryObj &&
                                                 <ReactCountryFlag code={ this.state.port.countryObj.code }/> }
                                             </Typography>

@@ -28,6 +28,7 @@ class IntelligenceRisk extends React.Component {
 
         let riskResponse = await fetch(`http://localhost:9000/ports/risk/${ this.props.id }`)
             .then(res => res.json());
+
         riskResponse = riskResponse[0];
         portCalls.sort((a, b) => {
             return new Date(a.month) - new Date(b.month);
@@ -64,11 +65,11 @@ class IntelligenceRisk extends React.Component {
                 name: "Port Calls",
                 data: portCalls.map(({ portcalls_last_year }) => portcalls_last_year),
             }],
-            risk: (riskResponse.port_percentile * 100).toFixed(2) || 0,
-            riskyVesselsCount: riskResponse.vessel_count_risky,
-            vesselsCount: riskResponse.vessel_count_total,
-            riskyVessels: riskResponse.risky.slice(0, 3),
-            upcomingRiskyVessels: riskResponse.upcoming_risky_vessels.slice(0, 3),
+            risk: riskResponse ? (riskResponse.port_percentile * 100).toFixed(2) : 1,
+            riskyVesselsCount: riskResponse ? riskResponse.vessel_count_risky : 1,
+            vesselsCount: riskResponse ? riskResponse.vessel_count_total : 1,
+            riskyVessels: riskResponse ? riskResponse.risky.slice(0, 3) : [],
+            upcomingRiskyVessels: riskResponse ? riskResponse.upcoming_risky_vessels.slice(0, 3) : [],
         })
     };
 
