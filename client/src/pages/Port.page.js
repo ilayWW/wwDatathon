@@ -11,6 +11,7 @@ import PortCallsChart from "../components/PortCallsChart.component";
 import IntelligenceRisk from "../components/IntelligenceRisk.component";
 import Divider from "@material-ui/core/Divider";
 import ClassesBarChart from "../components/BarsChart.component";
+import words from 'lodash/words';
 
 
 @inject('portsStore')
@@ -30,19 +31,21 @@ class PortPage extends Component {
             .then(res => res.json());
 
         staticData = staticData[0];
+        const countryName = words(staticData.country).join(' ');
         staticData.countryObj = {
-            code: getCode(staticData.country||''),
-            name: staticData.country
+            code: getCode(countryName  || ''),
+            name: countryName
         };
 
         let port = staticData;
         if (!portsStore.ports.get(portId)) {
             const portImgData = await fetch(`http://localhost:9000/ports/${ portId }`)
                 .then(res => res.json());
-            Object.assign(port, portImgData[0]);
+            port = Object.assign(port, portImgData[0]);
         }
-        this.props.portsStore.setPorts([port]);
-        this.setState({ port: Object.assign({}, portsStore.ports.get(portId), port) });
+        const wholePort = Object.assign({}, portsStore.ports.get(portId), port);
+        this.props.portsStore.setPorts([wholePort]);
+        this.setState({ port: wholePort});
     }
 
     render() {
@@ -75,7 +78,7 @@ class PortPage extends Component {
 
                                 <Grid item xs={ 7 } container justify={ 'flex-end' }>
                                     <Grid item>
-                                        <img height={ '250px' } src={ this.state.port.url } alt=""/>
+                                        {this.state.port.url && <img height={ '250px' } src={ this.state.port.url } alt=""/>}
                                     </Grid>
                                 </Grid>
                             </Grid>
